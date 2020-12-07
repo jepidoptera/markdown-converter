@@ -6,12 +6,31 @@ function handlePaste (e) {
     e.preventDefault();
 
     // Get pasted data via clipboard API
-    clipboardData = e.clipboardData || window.clipboardData;
+    clipboardData = e.clipboardData;
     pastedData = clipboardData.getData('text/html');
     
-    console.log(pastedData);
+    // console.log(pastedData);
     // Do whatever with pasteddata
     $('#bufferDiv').html(pastedData);
+    // find all links within that data
+    function parseLinks (element) {
+        let linksList = [];
+        $(element).find('*').each(function(index) {
+            if (this.nodeName === "A") {
+                linksList.push(this);
+            }
+        })
+        return linksList;
+    }
+    const links = parseLinks($('#bufferDiv'));
+    links.forEach(link => {
+        $(link).replaceWith($("<span>")
+            .css({'backgroundColor': 'yellow'})
+            .text(`[${link.text}](${link.href})`)
+        )
+    })
+    console.log(links)
+    $("#editableDiv").html($("#bufferDiv").html())
 }
 
 jQuery(function($){
