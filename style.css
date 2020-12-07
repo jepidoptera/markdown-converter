@@ -1,0 +1,20 @@
+#editableDiv {
+    width: 100%;
+    height: Calc(100vh - 20px);
+    display: block;
+    position: relative;
+    border: 1px solid black;
+    box-sizing: border-box;
+}
+#bufferDiv {
+    display: none;
+}
+
+[placeholder]:empty::before {
+    content: attr(placeholder);
+    color: #555; 
+}
+
+[placeholder]:empty:focus::before {
+    content: "";
+}
