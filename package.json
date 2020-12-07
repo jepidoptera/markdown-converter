@@ -1,0 +1,25 @@
+{
+  "name": "link-replacer",
+  "version": "1.0.0",
+  "description": "converts html to markdown",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "http": "^0.0.1-security",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jepidoptera/markdown-converter.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jepidoptera/markdown-converter/issues"
+  },
+  "homepage": "https://github.com/jepidoptera/markdown-converter#readme"
+}
