@@ -25,10 +25,15 @@ function handlePaste (e) {
     // modify html hyperlinks
     const links = parseLinks($('#bufferDiv'))
     let textPosition = 0;
+    let parentText = null;
     console.log(links)
     links.forEach(link => {
-        // make sure it is no already bracketed
-        let parentText = $(link).parent().text()
+        // make sure it is not already bracketed
+        let parent = $(link).parent();
+        if ($(link).parent().text() != parentText) {
+            parentText = $(link).parent().text();
+            textPosition = 0;
+        }
         let linkLoc = parentText.indexOf($(link).text(), textPosition);
         textPosition = linkLoc;
         if (parentText[linkLoc-1] === "[" && parentText[linkLoc + $(link).text().length] === "]")
@@ -38,6 +43,7 @@ function handlePaste (e) {
             .addClass('modified')
             .html(`[<a href=${link.href}>${link.text}</a>](${link.href})`)
         )
+        parentText = $(parent).text()
     })
 
     // find all text nodes
@@ -48,7 +54,6 @@ function handlePaste (e) {
     };
     // find links that are present in text
     const textNodes = getTextNodesIn($("#bufferDiv"));
-    console.log('text contents:')
     const urlexpression = /(http[s]?:\/\/)?[-a-z0-9@:%._\+~#=]{1,256}\.(com|org|io|me){1}\b([-a-z0-9()@:%_\+.~#?&//=]*)[^.\s]/gi;
     const regex = new RegExp(urlexpression);
 
@@ -87,7 +92,6 @@ function handlePaste (e) {
     // modifyPlaintextLinks(textNodes)
 
     $("#editableDiv").html($("#bufferDiv").html())
-
 }
 
 
@@ -119,3 +123,9 @@ jQuery(function($){
         }
     });
 });
+
+- [Blind Find](https://github.com/mhchia/blind-find) - a p2p network allowing users to search for others without revealing their identity. After a successful search, the user can prove the search path exists in the network with a MPC-based construction, without revealing the path itself. To learn more and discuss, please join the [telegram group](https://t.me/joinchat/GIaIkRr2NxiFoYHTP6PACg).
+
+- [UniRep](https://github.com/NIC619/UniRep) - a private and non repudiable reputation system. Users can receive positive and negative reputation from attesters, and voluntarily prove that they have at least a certain amount of reputation without revealing the exact amount. Moreover, users cannot refuse to receive reputation from an attester. Join the [telegram channel](https://t.me/joinchat/GIaIkRqYKbzuYgR8dWmivw) to learn more and discuss!
+
+- [PeekABook](https://github.com/mhchia/peek-a-book) - a private order matching system on Ethereum. It allows users to advertise and search for trading orders without leaking the order price. Check out the [demo](https://mhchia.github.io/peek-a-book/). Join the [telegram group](https://t.me/joinchat/GIaIkRr2NxiFoYHTP6PACg) for discussion.
