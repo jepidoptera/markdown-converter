@@ -23,18 +23,24 @@ function handlePaste (e) {
         return linksList;
     }
     // modify html hyperlinks
-    const links = parseLinks($('#bufferDiv'));
+    const links = parseLinks($('#bufferDiv'))
+    let textPosition = 0;
+    console.log(links)
     links.forEach(link => {
-        // let beforeAndAfter = link.parent.textContent;
-        // console.log(beforeAndAfter)
+        // make sure it is no already bracketed
+        let parentText = $(link).parent().text()
+        let linkLoc = parentText.indexOf($(link).text(), textPosition);
+        textPosition = linkLoc;
+        if (parentText[linkLoc-1] === "[" && parentText[linkLoc + $(link).text().length] === "]")
+            return;
+        // assuming it is not, modify it
         $(link).replaceWith($("<span>")
             .css({'backgroundColor': 'yellow'})
             .addClass('modified')
-            .html(`[<a>${link.text}</a>](${link.href})`)
+            .html(`[<a href=${link.href}>${link.text}</a>](${link.href})`)
         )
     })
 
-    console.log(links)
     $("#editableDiv").html($("#bufferDiv").html())
     // find all text nodes
     var getTextNodesIn = function(el) {
@@ -45,18 +51,26 @@ function handlePaste (e) {
     // find links that are present in text
     const textNodes = getTextNodesIn($("#bufferDiv"));
     console.log('text contents:')
-    const urlexpression = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
+    const urlexpression = /(http[s]?:\/\/)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.(com|org|io|me){1}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi;
     const regex = new RegExp(urlexpression);
 
     function modifyPlaintextLinks(textNodes) {
         textNodes.each(function() {
             // is there a link in here?
-            console.log(this);
+            let matchLoc = this.textContent.match(regex)
             
-            if (this.textContent.match(regex)) {
+            if (matchLoc) {
+                console.log(this);
                 console.log("!match");
+                if ($(this).parent().hasClass('modified')) {
+                    console.log('but already modified.')
+                }
+                else {
+                    // modify it
+                    matchLoc.
+                }
             } else {
-                console.log("No match");
+                // console.log("No match");
             } 
         })
     }
