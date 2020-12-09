@@ -84,14 +84,33 @@ function handlePaste (e) {
             // } 
         })
     }
-    modifyPlaintextLinks(textNodes)
+    // modifyPlaintextLinks(textNodes)
 
     $("#editableDiv").html($("#bufferDiv").html())
 
 }
 
+
+function handleCopy(e) {
+    $('#bufferDiv').html($('#editableDiv').html())
+    // get rid of 'modified' tags
+    $('#editableDiv').find(".modified").each(function() {
+        $(this).replaceWith($(this).contents())
+    })
+    // var range = document.createRange();
+    // range.selectNode(document.getElementById("bufferDiv"));
+    // window.getSelection().removeAllRanges(); // clear current selection
+    // window.getSelection().addRange(range); // to select text
+    // document.execCommand("copy");
+    // window.getSelection().removeAllRanges();
+    // console.log("copy operation: ", e.clipboardData.setData('text/html', `<div> ${$("#bufferDiv").html()} !!! </div>`));
+    // e.preventDefault();
+    setTimeout(() => $("#editableDiv").html($("#bufferDiv").html()), 1)
+}
+
 jQuery(function($){
     document.getElementById('editableDiv').addEventListener('paste', handlePaste);
+    document.addEventListener('copy', handleCopy);
 
     $("[contenteditable]").focusout(function(){
         var element = $(this);        
