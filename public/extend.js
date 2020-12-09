@@ -35,13 +35,11 @@ function handlePaste (e) {
             return;
         // assuming it is not, modify it
         $(link).replaceWith($("<span>")
-            .css({'backgroundColor': 'yellow'})
             .addClass('modified')
             .html(`[<a href=${link.href}>${link.text}</a>](${link.href})`)
         )
     })
 
-    $("#editableDiv").html($("#bufferDiv").html())
     // find all text nodes
     var getTextNodesIn = function(el) {
         return $(el).find("*").addBack().contents().filter(function() {
@@ -51,30 +49,45 @@ function handlePaste (e) {
     // find links that are present in text
     const textNodes = getTextNodesIn($("#bufferDiv"));
     console.log('text contents:')
-    const urlexpression = /(http[s]?:\/\/)?[-a-z0-9@:%._\+~#=]{1,256}\.(com|org|io|me){1}\b([-a-z0-9()@:%_\+.~#?&//=]*)/gi;
+    const urlexpression = /(http[s]?:\/\/)?[-a-z0-9@:%._\+~#=]{1,256}\.(com|org|io|me){1}\b([-a-z0-9()@:%_\+.~#?&//=]*)[^.\s]/gi;
     const regex = new RegExp(urlexpression);
 
     function modifyPlaintextLinks(textNodes) {
         textNodes.each(function() {
             // is there a link in here?
-            let matchLoc = this.textContent.matchAll(regex)
-            
-            
-            if (matchLoc) {
-                console.log(this);
-                console.log("!match");
-                if ($(this).parent().hasClass('modified')) {
-                    console.log('but already modified.')
-                }
-                else {
-                    // modify it
-                }
-            } else {
-                // console.log("No match");
-            } 
+            let matches = this.textContent.matchAll(regex)
+            let newHTML = ''
+            let textPosition = 0
+
+            for (match of matches) {
+                newHTML += this.textContent.slice(textPosition, match.index)
+                newHTML += `<span class='modified'>[<a href='${match[0]}'>${match[0]}</a>](${match[0]})</span>`
+                textPosition = match.index + match[0].length
+            }
+
+            if (newHTML) {
+                newHTML += this.textContent.slice(textPosition)
+                $(this).replaceWith($("<span>").html(newHTML))
+            }
+
+            // if (matchLoc) {
+            //     console.log(this);
+            //     console.log("!match");
+            //     if ($(this).parent().hasClass('modified')) {
+            //         console.log('but already modified.')
+            //     }
+            //     else {
+            //         // modify it
+            //     }
+            // } else {
+            //     // console.log("No match");
+            // } 
         })
     }
     modifyPlaintextLinks(textNodes)
+
+    $("#editableDiv").html($("#bufferDiv").html())
+
 }
 
 jQuery(function($){
