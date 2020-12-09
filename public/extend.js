@@ -51,13 +51,14 @@ function handlePaste (e) {
     // find links that are present in text
     const textNodes = getTextNodesIn($("#bufferDiv"));
     console.log('text contents:')
-    const urlexpression = /(http[s]?:\/\/)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.(com|org|io|me){1}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi;
+    const urlexpression = /(http[s]?:\/\/)?[-a-z0-9@:%._\+~#=]{1,256}\.(com|org|io|me){1}\b([-a-z0-9()@:%_\+.~#?&//=]*)/gi;
     const regex = new RegExp(urlexpression);
 
     function modifyPlaintextLinks(textNodes) {
         textNodes.each(function() {
             // is there a link in here?
-            let matchLoc = this.textContent.match(regex)
+            let matchLoc = this.textContent.matchAll(regex)
+            
             
             if (matchLoc) {
                 console.log(this);
@@ -67,7 +68,6 @@ function handlePaste (e) {
                 }
                 else {
                     // modify it
-                    matchLoc.
                 }
             } else {
                 // console.log("No match");
