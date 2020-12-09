@@ -124,8 +124,3 @@ jQuery(function($){
     });
 });
 
-- [Blind Find](https://github.com/mhchia/blind-find) - a p2p network allowing users to search for others without revealing their identity. After a successful search, the user can prove the search path exists in the network with a MPC-based construction, without revealing the path itself. To learn more and discuss, please join the [telegram group](https://t.me/joinchat/GIaIkRr2NxiFoYHTP6PACg).
-
-- [UniRep](https://github.com/NIC619/UniRep) - a private and non repudiable reputation system. Users can receive positive and negative reputation from attesters, and voluntarily prove that they have at least a certain amount of reputation without revealing the exact amount. Moreover, users cannot refuse to receive reputation from an attester. Join the [telegram channel](https://t.me/joinchat/GIaIkRqYKbzuYgR8dWmivw) to learn more and discuss!
-
-- [PeekABook](https://github.com/mhchia/peek-a-book) - a private order matching system on Ethereum. It allows users to advertise and search for trading orders without leaking the order price. Check out the [demo](https://mhchia.github.io/peek-a-book/). Join the [telegram group](https://t.me/joinchat/GIaIkRr2NxiFoYHTP6PACg) for discussion.
