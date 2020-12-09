@@ -18,3 +18,7 @@
 [placeholder]:empty:focus::before {
     content: "";
 }
+
+.modified {
+    background-color: yellow;
+}
