@@ -1,6 +1,6 @@
 #editableDiv {
     width: 100%;
-    height: Calc(100vh - 20px);
+    height: Calc(100vh - 50px);
     display: block;
     position: relative;
     border: 1px solid black;
@@ -9,7 +9,13 @@
 #bufferDiv {
     display: none;
 }
-
+#copyBtn {
+    display: block;
+    position: relative;
+    left: 50%;
+    transform: translate(-50%);
+    margin-top: 10px;
+}
 [placeholder]:empty::before {
     content: attr(placeholder);
     color: #555; 
