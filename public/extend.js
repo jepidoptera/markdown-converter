@@ -95,26 +95,33 @@ function handlePaste (e) {
 }
 
 
-function handleCopy(e) {
+function handleCopy() {
     $('#bufferDiv').html($('#editableDiv').html())
     // get rid of 'modified' tags
     $('#editableDiv').find(".modified").each(function() {
         $(this).replaceWith($(this).contents())
     })
-    // var range = document.createRange();
-    // range.selectNode(document.getElementById("bufferDiv"));
-    // window.getSelection().removeAllRanges(); // clear current selection
-    // window.getSelection().addRange(range); // to select text
-    // document.execCommand("copy");
-    // window.getSelection().removeAllRanges();
-    // console.log("copy operation: ", e.clipboardData.setData('text/html', `<div> ${$("#bufferDiv").html()} !!! </div>`));
-    // e.preventDefault();
-    setTimeout(() => $("#editableDiv").html($("#bufferDiv").html()), 1)
+    /* Select the text field */
+    var doc = document;
+    var element = document.getElementById("editableDiv");
+    console.log(this, element);
+
+    var selection = window.getSelection();        
+    var range = document.createRange();
+    range.selectNodeContents(element);
+    selection.removeAllRanges();
+    selection.addRange(range);
+
+    /* Copy the text inside the text field */
+    document.execCommand("copy");
+
+    // change it back (re-assert highlights)
+    setTimeout(() => $("#editableDiv").html($("#bufferDiv").html()), 1000)
 }
 
 jQuery(function($){
     document.getElementById('editableDiv').addEventListener('paste', handlePaste);
-    document.addEventListener('copy', handleCopy);
+    // document.addEventListener('copy', handleCopy);
 
     $("[contenteditable]").focusout(function(){
         var element = $(this);        
