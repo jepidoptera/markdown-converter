@@ -47,49 +47,72 @@ function handlePaste (e) {
     })
 
     // find all text nodes
-    var getTextNodesIn = function(el) {
-        return $(el).find("*").addBack().contents().filter(function() {
-            return this.nodeType == 3;
-        });
-    };
+    // var getTextNodesIn = function(el) {
+    //     return $(el).find("*").filter(function() {
+    //         return this.nodeType == 3;
+    //     });
+    // };
+    function getTextNodesIn(node, includeWhitespaceNodes) {
+        var textNodes = [], nonWhitespaceMatcher = /\S/;
+    
+        function getTextNodes(node) {
+            if (node.nodeType == 3) {
+                if (includeWhitespaceNodes || nonWhitespaceMatcher.test(node.nodeValue)) {
+                    textNodes.push(node);
+                }
+            } else {
+                for (var i = 0, len = node.childNodes.length; i < len; ++i) {
+                    getTextNodes(node.childNodes[i]);
+                }
+            }
+        }
+    
+        getTextNodes(node);
+        return textNodes;
+    }
+
     // find links that are present in text
-    const textNodes = getTextNodesIn($("#bufferDiv"));
-    const urlexpression = /(http[s]?:\/\/)?[-a-z0-9@:%._\+~#=]{1,256}\.(com|org|io|me){1}\b([-a-z0-9()@:%_\+.~#?&//=]*)[^.\s]/gi;
-    const regex = new RegExp(urlexpression);
+    const textNodes = getTextNodesIn($("#bufferDiv")[0], true);
+    const urlRegex = new RegExp(/(http[s]?:\/\/)?[-a-z0-9@:%._\+~#=]{1,256}\.(com|org|io|me){1}\b([-a-z0-9()@:%_\+.~#?&//=]*)[^.\s]/gi)
+    const markdownRegex = new RegExp(/(\[.*?\]\(.*?\))/gi)
+    const markdowns = Array.from($("#bufferDiv").text().matchAll(markdownRegex))
+    let elementPosition = 0;
 
     function modifyPlaintextLinks(textNodes) {
-        textNodes.each(function() {
+        textNodes.forEach(function(node) {
+            // get the length of the element's text before we modify it
+            let elementLength = node.textContent.length;
             // is there a link in here?
-            let matches = this.textContent.matchAll(regex)
+            let urls = node.textContent.matchAll(urlRegex)
             let newHTML = ''
             let textPosition = 0
 
-            for (match of matches) {
-                newHTML += this.textContent.slice(textPosition, match.index)
-                newHTML += `<span class='modified'>[<a href='${match[0]}'>${match[0]}</a>](${match[0]})</span>`
-                textPosition = match.index + match[0].length
+            for (url of urls) {
+                // but is it in markdown format already?
+                for (markdown of markdowns) {
+                    if (url.index + elementPosition > markdown.index && url.index + elementPosition < markdown.index + markdown[0].length) {
+                        // url within markdown - ignore
+                        url.ignore = true;
+                        break;
+                    }
+                }
+                if (!url.ignore) {
+                    newHTML += node.textContent.slice(textPosition, url.index)
+                    newHTML += `<span class='modified'>[<a href='${url[0]}'>${url[0]}</a>](${url[0]})</span>`
+                    textPosition = url.index + url[0].length
+                }
             }
 
             if (newHTML) {
-                newHTML += this.textContent.slice(textPosition)
-                $(this).replaceWith($("<span>").html(newHTML))
+                newHTML += node.textContent.slice(textPosition)
+                $(node).replaceWith($("<span>").html(newHTML))
             }
 
-            // if (matchLoc) {
-            //     console.log(this);
-            //     console.log("!match");
-            //     if ($(this).parent().hasClass('modified')) {
-            //         console.log('but already modified.')
-            //     }
-            //     else {
-            //         // modify it
-            //     }
-            // } else {
-            //     // console.log("No match");
-            // } 
+            elementPosition += elementLength;
+            // console.log(node.textContent)
         })
     }
-    // modifyPlaintextLinks(textNodes)
+    modifyPlaintextLinks(textNodes)
 
     $("#editableDiv").html($("#bufferDiv").html())
 }
@@ -102,12 +125,11 @@ function handleCopy() {
         $(this).replaceWith($(this).contents())
     })
     /* Select the text field */
-    var doc = document;
-    var element = document.getElementById("editableDiv");
+    let element = document.getElementById("editableDiv");
     console.log(this, element);
 
-    var selection = window.getSelection();        
-    var range = document.createRange();
+    let selection = window.getSelection();        
+    let range = document.createRange();
     range.selectNodeContents(element);
     selection.removeAllRanges();
     selection.addRange(range);
